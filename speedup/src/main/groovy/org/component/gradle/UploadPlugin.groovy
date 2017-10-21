@@ -12,10 +12,11 @@ public class UploadPlugin implements Plugin<Project>{
         project.afterEvaluate {
             String[] excludes = root.excludes
             project.plugins.apply(ReplacePlugin)
-
+            RootPlugin.log("Apply ReplacePlugin to $project.name")
             if (project == root
                     || excludes.contains(project.name)
                     || project.plugins.hasPlugin('com.android.application')) {
+                RootPlugin.log("Filter module:$project.name")
                 return
             }
 
