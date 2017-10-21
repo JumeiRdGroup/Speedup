@@ -13,8 +13,6 @@ dependencies {
 }
 
 def path = project.repositories.mavenLocal().url
-println "maven local path = $path"
-
 Properties local = new Properties()
 local.load(project.rootProject.file('local.properties').newInputStream())
 boolean useLocal = local.get("useLocal", false)
