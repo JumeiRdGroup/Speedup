@@ -59,9 +59,7 @@ excludeModules=modulename1,modulename2
     - 当打包发布时：此处所指定的模块将会不进行打包发布。
     - 当执行启动任务时：不对compile project为此module的依赖进行动态替换。
     
-- 示例
-
-可参考[一个简单的组件化demo](https://github.com/yjfnypeu/AndroidComponent)
+****示例: 可参考[一个简单的组件化demo](https://github.com/yjfnypeu/AndroidComponent)****
     
 ## License
 [apache 2.0](./LICENCE)
