@@ -8,6 +8,8 @@ public class UploadPlugin implements Plugin<Project>{
     @Override
     void apply(Project project) {
         def root = project.rootProject
+        def uploadAll = root.tasks.getByName("uploadAll")
+
         project.plugins.apply(MavenPlugin)
         project.afterEvaluate {
             String[] excludes = root.excludes
@@ -19,6 +21,10 @@ public class UploadPlugin implements Plugin<Project>{
                 RootPlugin.log("Filter module:$project.name")
                 return
             }
+
+            String name = project.path.replaceAll(":", "_")
+            def upload = project.rootProject.tasks.create(name: "upload$name", group: 'speedup', dependsOn: "${project.path}:uploadArchives")
+            uploadAll.dependsOn upload
 
             project.uploadArchives {
                 repositories {
@@ -41,6 +47,4 @@ public class UploadPlugin implements Plugin<Project>{
             }
         }
     }
-
-
 }
