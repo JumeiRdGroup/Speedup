@@ -31,6 +31,13 @@ buildscript {
         classpath "com.github.yjfnypeu:Speedup:$latest"
     }
 }
+
+allprojects {
+    repositories {
+        // 添加本地maven地址。本地库将会打包生成到此目录下。
+        maven { url rootDir.absolutePath + '/.repo'}
+    }
+}
 // 应用插件
 apply plugin: 'speedup'
 ```
