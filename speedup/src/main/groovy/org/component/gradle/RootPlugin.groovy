@@ -22,16 +22,19 @@ public class RootPlugin implements Plugin<Project> {
         boolean enable
         try {
             enable = Boolean.parseBoolean(local.get("speedup.enable") as String)
-            project.ext {
-                excludes = (local.get("excludeModules", "") as String).split(',')
+            root.ext {
+                excludes = (local.get("excludeModules", "") as String).replaceAll(' ', '').split(',')
             }
         } catch (Exception e) {
             enable = false
         }
-//        boolean enable = Boolean.parseBoolean(local.get("speedup.enable", "false"))
         if (!enable) {
             log(LogLevel.ERROR, "plugin 'speedup' is disabled, you can add 'speedup.enable=true' on local.properties to enable Speedup")
             return
+        }
+
+        root.excludes.each {
+            log("exclude module name $it")
         }
 
         // create uploadAll task
