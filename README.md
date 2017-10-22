@@ -87,22 +87,39 @@ excludeModules=modulepath1,modulepath2
 
 ![upload](./pics/upload.png)
 
-    
-    为什么不直接使用uploadArchives命令？是因为在AS的gradle任务视图窗口中使用uploadArchives时。
-    会触发使用root project的uploadArchives命令。导致各个不需要进行编译打包的模块：如application
-    module，也都会被编译执行一次。严重影响了发布速度。
-    
-    而使用命令行的方式执行单个的module的uploadArchives任务可以避免以上情况，但是略显复杂，容易使用不顺
 
 成功后将在项目根目录下生成一个.repo文件夹, 其中存放打包发布的aar。请注意将此文件夹加入版本控制忽略列表中。
 
-请注意在每次有切换分支之后。先进行clean，再进行打包发布。避免版本不一致问题出现
+请注意在每次有切换分支之后。先进行clean，再进行打包发布。避免因为AS缓存出现问题。
     
-然后直接通过![launch](./pics/launch.png)进行启动。和平时开发时一样
+然后直接通过![launch](./pics/launch.png)进行启动即可。和平时开发时一样
+
+#### 问答
+
+- 为什么不直接使用uploadArchives任务进行直接打包发布？
+
+这是为了能更方便更快速的进行打包编译。
+
+因为如果直接使用AS的gradle任务窗口中的uploadArchives任务时：会触发使用root project的uploadArchives命令。
+导致其实一些不需要在此时被编译的模块也都会进行编译打包，严重影响了发布速度。
+
+而使用命令行的方式执行单个的module的uploadArchives任务可以避免以上情况，但是略显复杂，容易使用不顺
+
+以下为使用demo进行测试时，完全clean后分别使用uploadAll以及uploadArchives时的运行时间对比：
+
+![uploadAll](./pics/uploadAll.png)
+
+![uploadArchives](./pics/uploadArchives.png)
+
+- 我直接搭个远程仓库就可以打包发布了。为什么要来用这种打包发布到本地的策略用法？
+
+远程仓库和本地仓库各有特点。本地仓库的最主要特点是version不唯一，即可不用每次都去修改版本号再发布，完全可以同一个版本覆盖发布。
+
+个人给的建议是：对于一些基本已经比较稳定了的library，可选择发布到远程仓库中去。而对于组件化这种形式的。大部分的library其实是一直在变一直在修改的。可选择发布到本地仓库中。避免过于频繁的修改版本号打包发布。
 
 #### 示例
 
-****可参考[一个简单的组件化demo](https://github.com/yjfnypeu/AndroidComponent)****
+***可参考[一个简单的组件化demo](https://github.com/yjfnypeu/AndroidComponent)***
     
 ## License
 [apache 2.0](./LICENCE)
