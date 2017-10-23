@@ -31,13 +31,6 @@ buildscript {
         classpath "com.github.yjfnypeu:Speedup:$latest"
     }
 }
-
-allprojects {
-    repositories {
-        // 添加本地maven地址。本地库将会打包生成到此目录下。
-        maven { url rootDir.absolutePath + '/.repo'}
-    }
-}
 // 应用插件
 apply plugin: 'speedup'
 ```
@@ -48,14 +41,19 @@ apply plugin: 'speedup'
 
 ```
 speedup.enable=true
+localRepo=localUrl
 excludeModules=modulepath1,modulepath2
 ```
 
-1. speedup.enable
+- speedup.enable
     
     此属性用于指定是否激活加速插件。默认为false。主要用于针对比如使用Jenkins打包发布时，不使用加速插件。
 
-2. excludeModules
+- localRepo
+
+	此属性提供用于定制所使用的本地仓库地址。若不配置则默认使用项目根目录下的.repo目录作为本地仓库地址。 **(请注意将此目录加入版本控制忽略表中。避免提交)**
+
+- excludeModules
     
     此属性的值为module的path值。即在settings.gradle中使用include所指定的路径地址：
     如 excludeModules=:app,:lib
