@@ -44,7 +44,7 @@ public class RootPlugin implements Plugin<Project> {
         // read local.properties
         Properties local = new Properties()
         local.load(root.file('local.properties').newInputStream())
-        File file = new File(local.get("localRepo", '.repo') as String)
+        File file = new File(local.get("localRepo", '_repo') as String)
         root.ext {
             excludes = (local.get("excludeModules", "") as String).replaceAll(' ', '').split(',')
             localMaven = file.absolutePath
