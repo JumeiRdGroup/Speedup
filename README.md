@@ -92,11 +92,8 @@ excludeModules=modulepath1,modulepath2
 
 ![upload](./pics/upload.png)
 
-
-成功后将在项目根目录下生成一个.repo文件夹, 其中存放打包发布的aar。请注意将此文件夹加入版本控制忽略列表中。
-
 请注意在每次有切换分支之后。先进行clean，再进行打包发布。避免因为AS缓存出现问题。
-    
+
 然后直接通过![launch](./pics/launch.png)进行启动即可。和平时开发时一样
 
 #### 问答
