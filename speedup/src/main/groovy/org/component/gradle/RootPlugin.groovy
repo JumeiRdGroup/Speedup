@@ -7,7 +7,7 @@ import org.gradle.api.logging.Logger
 
 public class RootPlugin implements Plugin<Project> {
 
-    Project root;
+    static Project root;
     static Logger logger
     @Override
     void apply(Project project) {
@@ -16,15 +16,10 @@ public class RootPlugin implements Plugin<Project> {
         }
         root = project.rootProject
         logger = project.logger
-        // read local.properties
-        Properties local = new Properties()
-        local.load(project.rootProject.file('local.properties').newInputStream())
+
         boolean enable
         try {
-            enable = Boolean.parseBoolean(local.get("speedup.enable") as String)
-            root.ext {
-                excludes = (local.get("excludeModules", "") as String).replaceAll(' ', '').split(',')
-            }
+            enable = parseLocal()
         } catch (Exception e) {
             enable = false
         }
@@ -38,15 +33,33 @@ public class RootPlugin implements Plugin<Project> {
         }
 
         // create uploadAll task
-        root.tasks.create(name:'uploadAll', group: 'speedup', dependsOn: 'clean')
+        root.tasks.create(name:'uploadAll', group: 'speedup')
 
         project.subprojects {
             it.plugins.apply(UploadPlugin)
         }
     }
 
+    static boolean parseLocal() {
+        // read local.properties
+        Properties local = new Properties()
+        local.load(root.file('local.properties').newInputStream())
+        File file = new File(local.get("localRepo", '.repo') as String)
+        root.ext {
+            excludes = (local.get("excludeModules", "") as String).replaceAll(' ', '').split(',')
+            localMaven = file.absolutePath
+        }
+
+        root.subprojects {
+            repositories {
+                maven { url file.absolutePath}
+            }
+        }
+
+        return Boolean.parseBoolean(local.get("speedup.enable") as String)
+    }
+
     static void log(LogLevel level = LogLevel.DEBUG, String message) {
         logger.log(level, "[Speedup] $message")
     }
-
 }

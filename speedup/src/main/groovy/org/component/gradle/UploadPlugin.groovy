@@ -36,7 +36,7 @@ public class UploadPlugin implements Plugin<Project>{
                         pom.groupId = "com.local.maven"
                         pom.artifactId = project.path.replaceAll(':','-')
                         pom.version = "local"
-                        repository(url: project.uri(project.rootDir.absolutePath + "/.repo"))
+                        repository(url: project.uri(project.rootProject.localMaven))
 
                         pom.whenConfigured { pom ->
                             pom.dependencies.forEach { dep ->

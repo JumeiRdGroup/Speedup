@@ -24,7 +24,7 @@ public class ReplacePlugin implements Plugin<Project>{
                     }
 
                     name = name.replaceAll(':','-')
-                    File repoDir = new File(project.rootDir, ".repo/com/local/maven/$name")
+                    File repoDir = new File(project.rootProject.localMaven, "com/local/maven/$name")
                     if (!repoDir.exists()) {
                         RootPlugin.log(LogLevel.ERROR, "compile project with name [$name] wasn't be upload to local")
                         return
