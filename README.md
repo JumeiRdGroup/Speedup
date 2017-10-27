@@ -51,7 +51,7 @@ excludeModules=modulepath1,modulepath2
 
 - localRepo
 
-	此属性提供用于定制所使用的本地仓库地址。若不配置则默认使用项目根目录下的.repo目录作为本地仓库地址。 **(请注意将此目录加入版本控制忽略表中。避免提交)**
+	此属性提供用于定制所使用的本地仓库地址。若不配置则默认使用项目根目录下的_repo目录作为本地仓库地址。 **(请注意将此目录加入版本控制忽略表中。避免提交)**
 
 - excludeModules
     
@@ -61,12 +61,13 @@ excludeModules=modulepath1,modulepath2
     此属性用于指定不需要被加速的组件模块, 比如说组件化中的各自的业务线组件。
     这类组件因为是各自开发业务线的主module。需要随时变更改动。所以将其排除
     
-    可被排除的模块名称，需要为最顶层业务组件。即为 **只被application module所直接依赖** 的组件。
     application module被默认排除的。不需要再进行单独配置
     
     此属性的作用：
     - 当打包发布时：此处所指定的模块将会不进行打包发布。
-    - 当执行启动任务时：不对compile project为此module的依赖进行动态替换。
+    - 当执行启动任务时：
+        1. 对此组件依赖方式为compile project的，不进行替换
+        2. 对别的替换的组件。子依赖含有此组件的依赖时。从aar子依赖中移除并替换为project依赖。
     
 ### 用法
 
@@ -91,8 +92,6 @@ excludeModules=modulepath1,modulepath2
 或者可使用AS提供的gradle任务视图窗口直接进行使用：
 
 ![upload](./pics/upload.png)
-
-请注意在每次有切换分支之后。先进行clean，再进行打包发布。避免因为AS缓存出现问题。
 
 然后直接通过![launch](./pics/launch.png)进行启动即可。和平时开发时一样
 
