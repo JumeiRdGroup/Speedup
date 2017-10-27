@@ -20,12 +20,12 @@ class UploadPlugin implements Plugin<Project>{
         }
 
         project.plugins.apply(MavenPlugin)
-        project.group = 'com.local.maven'
-        project.version = 'local'
 
         project.uploadArchives {
             repositories {
                 mavenDeployer {
+                    pom.groupId = "com.local.maven"
+                    pom.version = "local"
                     pom.artifactId = project.path.replaceAll(':','-')
                     repository(url: project.uri(project.rootProject.localMaven))
                 }
