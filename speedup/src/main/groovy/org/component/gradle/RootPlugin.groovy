@@ -7,8 +7,11 @@ import org.gradle.api.logging.Logger
 
 public class RootPlugin implements Plugin<Project> {
 
-    static Project root;
+    Project root
+    boolean isAssemble
+
     static Logger logger
+
     @Override
     void apply(Project project) {
         if (project != project.rootProject) {
@@ -16,7 +19,7 @@ public class RootPlugin implements Plugin<Project> {
         }
         root = project.rootProject
         logger = project.logger
-
+        parseTasks(project)
         boolean enable
         try {
             enable = parseLocal()
@@ -32,21 +35,32 @@ public class RootPlugin implements Plugin<Project> {
             log("exclude module name $it")
         }
 
-        // create uploadAll task
-        root.tasks.create(name:'uploadAll', group: 'speedup')
+        // create upload tasks
+        def uploadAll = root.tasks.create(name:'uploadAll', group: 'speedup')
+        def uploadForClean = root.tasks.create(name:'uploadForClean', group: 'speedup').doLast {
+            log(LogLevel.LIFECYCLE, 'clean for upload successful!')
+        }
+        uploadAll.dependsOn uploadForClean
 
         project.subprojects {
-            it.plugins.apply(UploadPlugin)
+            it.afterEvaluate {
+                it.plugins.apply(UploadPlugin)
+                if (isAssemble) {
+                    it.plugins.apply(ReplacePlugin)
+                }
+            }
         }
     }
 
-    static boolean parseLocal() {
+    private boolean parseLocal() {
         // read local.properties
         Properties local = new Properties()
         local.load(root.file('local.properties').newInputStream())
         File file = new File(local.get("localRepo", '_repo') as String)
+        String excludeModules = local.get("excludeModules", "") as String
+        excludeModules = excludeModules.replaceAll(' ','')
         root.ext {
-            excludes = (local.get("excludeModules", "") as String).replaceAll(' ', '').split(',')
+            excludes = excludeModules.length() == 0 ? [] as String[] : excludeModules.split(',')
             localMaven = file.absolutePath
         }
 
@@ -61,5 +75,13 @@ public class RootPlugin implements Plugin<Project> {
 
     static void log(LogLevel level = LogLevel.DEBUG, String message) {
         logger.log(level, "[Speedup] $message")
+    }
+
+    private void parseTasks(Project project){
+        project.gradle.startParameter.taskNames.each {
+            if (it.contains("assemble")) {
+                isAssemble = true
+            }
+        }
     }
 }
