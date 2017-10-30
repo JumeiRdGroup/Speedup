@@ -9,7 +9,7 @@ public class RootPlugin implements Plugin<Project> {
 
     Project root
     boolean isAssemble
-
+    boolean isUpload
     static Logger logger
 
     @Override
@@ -43,7 +43,7 @@ public class RootPlugin implements Plugin<Project> {
         project.subprojects {
             it.afterEvaluate {
                 it.plugins.apply(UploadPlugin)
-                if (isAssemble) {
+                if (isAssemble || isUpload) {
                     it.plugins.apply(ReplacePlugin)
                 }
             }
@@ -79,6 +79,8 @@ public class RootPlugin implements Plugin<Project> {
         project.gradle.startParameter.taskNames.each {
             if (it.contains("assemble")) {
                 isAssemble = true
+            } else if (it.contains('upload')) {
+                isUpload = true
             }
         }
     }
