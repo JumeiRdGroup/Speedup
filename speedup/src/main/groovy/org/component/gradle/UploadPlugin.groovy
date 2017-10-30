@@ -28,6 +28,15 @@ class UploadPlugin implements Plugin<Project>{
                     pom.version = "local"
                     pom.artifactId = project.path.replaceAll(':','-')
                     repository(url: project.uri(project.rootProject.localMaven))
+
+                    pom.whenConfigured { pom ->
+                        pom.dependencies.forEach { dep ->
+                            if (dep.getVersion() == "unspecified") {
+                                dep.setGroupId("com.local.maven")
+                                dep.setVersion("local")
+                            }
+                        }
+                    }
                 }
             }
         }
