@@ -37,9 +37,7 @@ public class RootPlugin implements Plugin<Project> {
 
         // create upload tasks
         def uploadAll = root.tasks.create(name:'uploadAll', group: 'speedup')
-        def uploadForClean = root.tasks.create(name:'uploadForClean', group: 'speedup').doLast {
-            log(LogLevel.LIFECYCLE, 'clean for upload successful!')
-        }
+        def uploadForClean = root.tasks.create(name:'uploadForClean', group: 'speedup')
         uploadAll.dependsOn uploadForClean
 
         project.subprojects {
