@@ -5,6 +5,11 @@ import org.gradle.api.Project
 import org.gradle.api.logging.LogLevel
 import org.gradle.api.plugins.MavenPlugin
 
+/**
+ * 打包上传插件。
+ *
+ * @author haoge
+ */
 class UploadPlugin implements Plugin<Project>{
 
     @Override
@@ -13,6 +18,7 @@ class UploadPlugin implements Plugin<Project>{
         def uploadAll = root.tasks.getByName("uploadAll")
         def uploadForClean = root.tasks.getByName("uploadForClean")
         String[] excludes = root.excludes
+        uploadForClean.dependsOn "${project.path}:clean"
 
         if (project == root
                 || project.plugins.hasPlugin('com.android.application')) {
@@ -52,7 +58,7 @@ class UploadPlugin implements Plugin<Project>{
         upload.doLast {
             RootPlugin.log(LogLevel.LIFECYCLE, "upload ${project.path} to local maven successful!")
         }
-        uploadForClean.dependsOn "${project.path}:clean"
+
         uploadAll.dependsOn upload
     }
 
