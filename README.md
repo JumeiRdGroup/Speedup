@@ -63,12 +63,6 @@ excludeModules=modulepath1,modulepath2
     
     application module被默认排除的。不需要再进行单独配置
     
-    此属性的作用：
-    - 当打包发布时：此处所指定的模块将会不进行打包发布。
-    - 当执行启动任务时：
-        1. 对此组件依赖方式为compile project的，不进行替换
-        2. 对别的替换的组件。子依赖含有此组件的依赖时。从aar子依赖中移除并替换为project依赖。
-    
 ### 用法
 
 主要用法是将module进行打包发布到本地maven库中去，发布方式分为两种：
