@@ -22,6 +22,7 @@ public class RootPlugin implements Plugin<Project> {
     Project root
     boolean isAssemble
     boolean isUpload
+    boolean isUploadAll
     static Logger logger
 
     @Override
@@ -55,8 +56,9 @@ public class RootPlugin implements Plugin<Project> {
             it.afterEvaluate {
                 // 对每个project都应用此UploadPlugin.
                 it.plugins.apply(UploadPlugin)
-                if (isAssemble || isUpload) {
+                if (isAssemble || (isUpload && !isUploadAll)) {
                     // 只针对assemble及upload任务添加动态替换插件
+                    // 排除uploadAll任务。
                     // assemble任务及upload任务均为根据project依赖链来决定哪些project需要编译的
                     // 所以对此两种任务。使用动态替换插件。可以有效减少需被编译的module数量。达到打包提速的作用
                     it.plugins.apply(ReplacePlugin)
@@ -98,6 +100,10 @@ public class RootPlugin implements Plugin<Project> {
                 isAssemble = true
             } else if (it.contains('upload')) {
                 isUpload = true
+            }
+
+            if (it == 'uploadAll') {
+                isUploadAll = true
             }
         }
     }
