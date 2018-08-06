@@ -19,10 +19,10 @@ import org.gradle.api.logging.Logger
  */
 public class RootPlugin implements Plugin<Project> {
 
-    Project root
-    boolean isAssemble
-    boolean isUpload
-    boolean isUploadAll
+    Project root                    // root project
+    boolean isAssemble              // 运行的是否是assembleXXX任务
+    boolean isUpload                // 运行的是否是插件创建的upload任务(不包括系统定义的uploadArchives)
+    boolean isUploadAll             // 运行的是否是uploadAll任务
     static Logger logger
 
     @Override
@@ -54,6 +54,10 @@ public class RootPlugin implements Plugin<Project> {
 
         project.subprojects {
             it.afterEvaluate {
+                if (isUpload) {
+                    // 强制自身的version为特殊字符。便于`UploadPlugin`进行匹配修改
+                    it.version = "unspecified"
+                }
                 // 对每个project都应用此UploadPlugin.
                 it.plugins.apply(UploadPlugin)
                 if (isAssemble || (isUpload && !isUploadAll)) {
@@ -98,7 +102,7 @@ public class RootPlugin implements Plugin<Project> {
         project.gradle.startParameter.taskNames.each {
             if (it.contains("assemble")) {
                 isAssemble = true
-            } else if (it.contains('upload')) {
+            } else if (it.contains('upload') && it != "uploadArchives") {
                 isUpload = true
             }
 
